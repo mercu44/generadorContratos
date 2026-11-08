@@ -3,7 +3,7 @@ const path = require('node:path');
 const fields = ['nombre', 'dni', 'residencia', 'trastero', 'superficie', 'fechainicio', 'fechafinal', 'fechafirma', 'preciooriginal', 'iva'];
 function validate(data) {
   const errors = [];
-  if (!data || typeof data !== 'object' || Array.isArray(data)) return { errors: ['Se esperaba un objeto JSON.'] };
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return { errors: ['Se esperaba un objeto JSON.'], fieldErrors: {} };
   const value = {};
   for (const [field, max] of [['nombre',160], ['dni',30], ['residencia',350]]) {
     if (typeof data[field] !== 'string' || !data[field].trim() || data[field].trim().length > max) errors.push(`${field}: obligatorio, máximo ${max} caracteres.`);
@@ -22,7 +22,12 @@ function validate(data) {
     else value[field] = raw;
   }
   if (value.fechainicio && value.fechafinal && value.fechafinal <= value.fechainicio) errors.push('La fecha final debe ser posterior a la inicial.');
-  return { errors, value };
+  const fieldErrors = {};
+  for (const error of errors) {
+    const field = error.startsWith('La fecha final') ? 'fechafinal' : error.split(':')[0];
+    fieldErrors[field] = error;
+  }
+  return { errors, fieldErrors, value };
 }
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function render(contract) {

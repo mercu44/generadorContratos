@@ -18,6 +18,7 @@ services:
     build: .
     environment:
       PORT: 3000
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
       PGHOST: db
       PGPORT: 5432
       PGUSER: ${POSTGRES_USER:-contratos}

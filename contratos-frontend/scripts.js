@@ -3,11 +3,44 @@ const money = value => Number(value).toLocaleString('es-ES',{style:'currency',cu
 const message = (text, error=false) => { $('#mensaje').textContent=text; $('#mensaje').className=error?'error':'success'; };
 async function api(url, options={}) {
   const response=await fetch(url,options);
-  if(!response.ok) { const body=await response.json().catch(()=>({})); throw new Error(body.error || 'No se pudo completar la operación.'); }
+  if(!response.ok) { const body=await response.json().catch(()=>({})); if(response.status===401 && url!=='/api/login') { location.replace('/login.html'); } const error=new Error(body.error || 'No se pudo completar la operación.'); error.fieldErrors=body.fieldErrors; throw error; }
   return response.status===204 ? null : response.json();
 }
+if($('#login')) {
+  $('#login').addEventListener('submit',async event=>{
+    event.preventDefault(); $('#entrar').disabled=true;
+    try { await api('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(event.target)))}); location.replace('/'); }
+    catch(error) { message(error.message,true); $('#entrar').disabled=false; }
+  });
+}
+if($('#logout')) $('#logout').onclick=async()=>{
+  try { await api('/api/logout',{method:'POST'}); location.replace('/login.html'); }
+  catch(error) { message(error.message,true); }
+};
 const form=$('#formulario');
 if(form) {
+  const inputs=[...form.querySelectorAll('input[name]')];
+  const touched=new Set();
+  function showFieldError(input,text) {
+    input.setAttribute('aria-invalid',String(Boolean(text)));
+    document.getElementById(input.id+'-error').textContent=text;
+  }
+  function checkField(input) {
+    let error='';
+    if(input.validity.badInput) error='Introduce un número válido.';
+    else if(!input.value.trim()) error='Este campo es obligatorio.';
+    else if(input.validity.rangeUnderflow || input.validity.rangeOverflow) error=`Introduce un valor entre ${input.min} y ${input.max}.`;
+    else if(input.validity.stepMismatch) error=input.name==='trastero'?'Introduce un número entero del 1 al 34.':'Usa como máximo dos decimales.';
+    else if(!input.validity.valid) error='Revisa el formato de este dato.';
+    if(input.name==='fechafinal' && input.value && form.fechainicio.value && input.value<=form.fechainicio.value) error='La fecha final debe ser posterior a la fecha de inicio.';
+    showFieldError(input,error);
+    return !error;
+  }
+  for(const input of inputs) {
+    const hint=document.createElement('span');hint.id=input.id+'-error';hint.className='field-error';hint.setAttribute('aria-live','polite');input.after(hint);input.setAttribute('aria-describedby',hint.id);
+    input.addEventListener('blur',()=>{touched.add(input);checkField(input);});
+    input.addEventListener('input',()=>{if(touched.has(input))checkField(input);if(input.name==='fechainicio' && touched.has(form.fechafinal))checkField(form.fechafinal);});
+  }
   const editing=location.pathname.endsWith('editar.html');
   const id=new URLSearchParams(location.search).get('id');
   const updateTotal=()=>$('#total').textContent=money(Number(form.preciooriginal.value)+Number(form.iva.value));
@@ -24,11 +57,17 @@ if(form) {
     })();
   } else { const now=new Date(); now.setMinutes(now.getMinutes()-now.getTimezoneOffset()); form.fechafirma.value=now.toISOString().slice(0,10); }
   form.addEventListener('submit',async event=> {
-    event.preventDefault(); $('#guardar').disabled=true;
+    event.preventDefault();
+    let valid=true;
+    for(const input of inputs) { touched.add(input); if(!checkField(input)) valid=false; }
+    if(!valid) {message('Revisa los campos marcados antes de guardar.',true);form.querySelector('[aria-invalid="true"]').focus();return;}
+    $('#guardar').disabled=true;
     try {
       await api('/api/contratos'+(editing?'/'+id:''),{method:editing?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(form)))});
       sessionStorage.setItem('notice',editing?'Contrato actualizado.':'Contrato creado.'); location.href='/';
-    } catch(error) { message(error.message,true); $('#guardar').disabled=false; }
+    } catch(error) { message(error.message,true); $('#guardar').disabled=false;
+      for(const [field,text] of Object.entries(error.fieldErrors || {})) {const input=form.elements.namedItem(field);if(input)showFieldError(input,text);}
+      form.querySelector('[aria-invalid="true"]')?.focus(); }
   });
 }
 if($('#contratos')) {
@@ -41,8 +80,8 @@ if($('#contratos')) {
     $('#estado').textContent=visible.length ? `${visible.length} contrato(s)` : contracts.length ? 'No hay resultados para esta búsqueda.' : 'Todavía no hay contratos. Crea el primero para empezar.';
     for(const c of visible) {
       const row=document.createElement('tr');
-      for(const text of [`${c.nombre} · ${c.dni}`,`N.º ${c.trastero} · ${c.superficie} m²`,`${c.fechainicio} → ${c.fechafinal}`,money(c.preciototal)]) { const cell=document.createElement('td');cell.textContent=text;row.append(cell); }
-      const actions=document.createElement('td');actions.className='row-actions';
+      for(const [index,text] of [`${c.nombre} · ${c.dni}`,`N.º ${c.trastero} · ${c.superficie} m²`,`${c.fechainicio} → ${c.fechafinal}`,money(c.preciototal)].entries()) { const cell=document.createElement('td');cell.dataset.label=['Arrendatario','Trastero','Periodo','Total mensual'][index];cell.textContent=text;row.append(cell); }
+      const actions=document.createElement('td');actions.className='row-actions';actions.dataset.label='Acciones';
       for(const [label,url] of [['Editar',`/editar.html?id=${c.id}`],['PDF',`/api/contratos/${c.id}/pdf`]]) {const a=document.createElement('a');a.textContent=label;a.href=url;actions.append(a);}
       const view=document.createElement('button'); view.textContent='Ver';view.type='button';view.onclick=()=>{$('#documento').src=`/api/contratos/${c.id}/html`;$('#vista').showModal();}; actions.append(view);
       const remove=document.createElement('button');remove.type='button';remove.textContent='Eliminar';remove.className='danger';

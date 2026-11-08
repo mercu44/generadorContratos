@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Iniciar sesión · Contratos</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/scripts.js" defer></script>
+</head>
+<body>
+  <header><a class="brand" href="/">▤ Contratos</a></header>
+  <main class="login-layout">
+    <section class="panel login-panel">
+      <p class="eyebrow">GESTIÓN DE TRASTEROS</p>
+      <h1>Iniciar sesión</h1>
+      <p>Accede a tus contratos de alquiler.</p>
+      <p id="mensaje" role="alert" aria-live="polite"></p>
+      <form id="login">
+        <label for="usuario">Usuario<input id="usuario" name="usuario" autocomplete="username" required autofocus></label>
+        <label for="password">Contraseña<input id="password" name="password" type="password" autocomplete="current-password" maxlength="128" required></label>
+        <button type="submit" id="entrar">Entrar</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

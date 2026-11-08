@@ -112,6 +112,17 @@ La integración verifica CRUD, cálculos, fechas, errores y rutas de vista previ
 - `Dockerfile` y `compose.yaml`: aplicación con Chromium y PostgreSQL persistente.
 - `tests/`: pruebas unitarias y de integración.
 
-Esta versión está preparada para uso local: no tiene autenticación y cualquier persona con acceso puede modificar contratos. Compose publica únicamente en `127.0.0.1`. Para compartirla por Internet, añade autenticación y HTTPS antes de exponerla, y cambia las credenciales de ejemplo. Guarda copias de seguridad del volumen. Dentro del contenedor Chromium se ejecuta sin su sandbox interno y con un usuario sin privilegios; solo renderiza la plantilla local con entradas escapadas y bloquea las peticiones externas.
+El acceso requiere el usuario **andres** y la contraseña **andres**. La sesión dura 8 horas y se guarda en una cookie HttpOnly con SameSite=Strict. Cerrar sesión invalida la cookie en el servidor. Las sesiones se mantienen en memoria: al reiniciar el backend hay que entrar de nuevo. Hay un límite global de 20 intentos de login por minuto. Compose publica únicamente en `127.0.0.1`. Para compartirla por Internet, configura HTTPS y `COOKIE_SECURE=true`. Las credenciales fijas solicitadas están en `contratos-backend/auth.js`; usa una contraseña más robusta antes de exponerla públicamente. Si usas Nginx conserva la cabecera Host con `proxy_set_header Host $host;`. Guarda copias de seguridad del volumen. Dentro del contenedor Chromium se ejecuta sin su sandbox interno y con un usuario sin privilegios; solo renderiza la plantilla local con entradas escapadas y bloquea las peticiones externas.
 
 Referencias técnicas: [consultas parametrizadas de node-postgres](https://node-postgres.com/features/queries), [generación PDF de Puppeteer](https://pptr.dev/next/api/puppeteer.page.pdf) e [inicialización de PostgreSQL en Docker](https://docs.docker.com/guides/postgresql).
+
+## Acceso y validación
+
+- `POST /api/login`: JSON `{ "usuario": "andres", "password": "andres" }`.
+- `GET /api/session`: usuario de la sesión, o 401.
+- `POST /api/logout`: cierra la sesión.
+- Todas las rutas `/api/contratos` requieren la cookie de sesión, también HTML y PDF.
+- Los errores 400 del formulario incluyen `fieldErrors`, un objeto con mensajes por campo. El navegador muestra el error junto al dato y enfoca el primer campo incorrecto.
+- En pantallas pequeñas el listado se convierte en tarjetas, sin desplazamiento horizontal de la tabla.
+
+Después de actualizar: `docker compose up --build -d`.

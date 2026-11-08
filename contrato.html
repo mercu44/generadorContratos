@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrato de Arrendamiento de Trastero</title>
+    <style>
+        @font-face {
+            font-family: 'Open Sans';
+            src: url('fonts/Open_Sans/static/OpenSans-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Open Sans';
+            src: url('fonts/Open_Sans/static/OpenSans-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Open Sans';
+            src: url('fonts/Open_Sans/static/OpenSans-Italic.ttf') format('truetype');
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'Open Sans';
+            src: url('fonts/Open_Sans/static/OpenSans-BoldItalic.ttf') format('truetype');
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            margin: 35px;
+            line-height: 1.6;
+        }
+
+        .titulo {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        hr {
+            border: 1px solid #000;
+            margin: 10px 0 30px 0;
+        }
+
+        .firma {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .firma div {
+            width: 45%;
+            text-align: center;
+        }
+
+        .clausula {
+            margin-top: 15px;
+        }
+
+        ol {
+            padding-left: 20px;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+
+        em {
+            font-style: italic;
+        }
+
+        strong em {
+            font-weight: bold;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="titulo"><strong>CONTRATO DE ARRENDAMIENTO DE TRASTERO</strong></div>
+<hr>
+
+<p><strong><em>REUNIDOS</em></strong></p>
+<p>
+De una parte, Don ANDRÉS BLASCO SEGURA, con DNI 17329258T, con domicilio en calle del Arzobispo Doménech 24, 4 I, Zaragoza, 50006, en adelante denominado "EL ARRENDADOR".<br>
+Y de otra parte, <strong>{{ nombre }}</strong>, con DNI <strong>{{ dni }}</strong>, con domicilio en <strong>{{ residencia }}</strong>, en adelante denominado "EL ARRENDATARIO".
+</p>
+
+<p>Ambas partes, en la calidad en que intervienen, se reconocen mutuamente la capacidad legal necesaria para contratar y obligarse, y a tal efecto,</p>
+
+<p><strong><em>EXPONEN:</em></strong></p>
+<ol>
+    <li>Que EL ARRENDADOR es propietario del trastero ubicado en Calle Silveria Fañanas 31, Zaragoza, 50011, (en adelante, "EL TRASTERO").</li>
+    <li>Que EL ARRENDATARIO está interesado en arrendar EL TRASTERO, y EL ARRENDADOR está dispuesto a ceder su uso bajo las condiciones que se estipulan en el presente contrato.</li>
+    <li>Que sobre dicho inmueble, se han construido trasteros numerados del 1 al 34, con número de licencia 202314668, siendo el trastero objeto del presente contrato el número {{ trastero }}, con una superficie de {{ superficie }} m².</li>
+</ol>
+
+<div class="clausula"><strong><em>PRIMERA. OBJETO</em></strong><br>
+El presente contrato tiene por objeto el arrendamiento del trastero descrito en la exposición anterior.
+</div>
+
+<div class="clausula"><strong><em>SEGUNDA. DURACIÓN</em></strong><br>
+La duración del presente contrato será de 12 meses sin obligación de permanencia por parte de EL ARRENDATARIO, comenzando el día {{ fechainicio }}, y finalizando el día {{ fechafinal }}, sin perjuicio de las prórrogas que, en su caso, se acuerden por las partes.
+</div>
+
+<div class="clausula"><strong><em>TERCERA. RENTA</em></strong><br>
+La renta mensual que EL ARRENDATARIO deberá abonar a EL ARRENDADOR será de {{preciooriginal}} euros más {{iva}} euros de IVA, totalizando {{preciototal}} euros, pagaderos por adelantado dentro de los primeros cinco días de cada mes en la cuenta bancaria número ES3021001869100100224273.
+</div>
+
+<div class="clausula"><strong><em>CUARTA. DESTINO</em></strong><br>
+EL ARRENDATARIO se compromete a destinar EL TRASTERO exclusivamente a la guarda y custodia de bienes de su propiedad, quedando prohibido su uso para fines comerciales, industriales, residenciales o cualquier otro distinto al pactado.
+</div>
+
+<div class="clausula"><strong><em>QUINTA. CONSERVACIÓN Y REPARACIONES</em></strong><br>
+EL ARRENDATARIO se obliga a mantener EL TRASTERO en buen estado de limpieza y conservación, haciéndose cargo de las pequeñas reparaciones que sean necesarias debido al uso ordinario. EL ARRENDADOR se hará cargo de las reparaciones mayores que sean necesarias para mantener EL TRASTERO en condiciones de uso.
+</div>
+
+<div class="clausula"><strong><em>SEXTA. PROHIBICIÓN DE CESIÓN Y SUBARRIENDO</em></strong><br>
+Queda prohibida la cesión total o parcial del presente contrato y el subarriendo del trastero arrendado sin el previo consentimiento por escrito de EL ARRENDADOR.
+</div>
+
+<div class="clausula"><strong><em>SÉPTIMA. RESOLUCIÓN DEL CONTRATO</em></strong><br>
+El presente contrato se resolverá, además de por las causas legalmente establecidas, por las siguientes:<br>
+1. El impago de la renta o de cualquier cantidad que EL ARRENDATARIO esté obligado a pagar.<br>
+2. El incumplimiento por parte de EL ARRENDATARIO de cualquiera de las obligaciones contenidas en el presente contrato.<br>
+3. La utilización del trastero para fines distintos a los pactados.
+</div>
+
+<div class="clausula"><strong><em>OCTAVA. LEGISLACIÓN APLICABLE</em></strong><br>
+En lo no previsto en el presente contrato, será de aplicación lo dispuesto en la Ley 29/1994, de 24 de noviembre, de Arrendamientos Urbanos, en la medida en que sea aplicable a los trasteros, y demás normativa que resulte de aplicación.
+</div>
+
+<div class="clausula"><strong><em>NOVENA. JURISDICCIÓN</em></strong><br>
+Para la resolución de cualquier controversia que pudiera derivarse de la interpretación o ejecución del presente contrato, las partes se someten expresamente a los Juzgados y Tribunales de Zaragoza.
+</div>
+
+<p>Y en prueba de conformidad, firman el presente contrato por duplicado y a un solo efecto, en el lugar y fecha indicados.</p>
+
+<p>En Zaragoza, a <strong>{{ fechafirma }}</strong></p>
+
+<div class="firma">
+    <div>EL ARRENDADOR</div>
+    <div>EL ARRENDATARIO</div>
+</div>
+
+
+</body>
+</html>
